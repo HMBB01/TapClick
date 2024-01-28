@@ -136,19 +136,10 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH", Locale.getDefault());
-        String forUpdate = dateFormat.format(new Date());
-        if (!forUpdate.equals(MyApplication.myAppConfig.forUpdate)) {
-            MyApplication.myAppConfig.forUpdate = forUpdate;
-            dataDao.updateMyAppConfig(MyApplication.myAppConfig);
-            showUpdateInfo();
-        }
         if (MyApplication.myAppConfig.autoHideOnTaskList) {
             MyUtils.setExcludeFromRecents(true);
         }
-        if (MyUtils.getIsFirstStart()) {
-            showPrivacyAgreement();
-        }
+
         handleImportRule(getIntent());
         // 触发允许读取应用列表授权弹窗
         getPackageManager().getInstalledPackages(PackageManager.GET_META_DATA);
@@ -174,93 +165,6 @@ public class MainActivity extends BaseActivity {
             mainBinding.statusImg.setImageResource(R.drawable.ic_error);
             mainBinding.statusTip.setText("无障碍服务未开启");
         }
-    }
-
-    private void showUpdateInfo() {
-        Observable<LatestMessage> observable = MyApplication.myHttpRequest.getLatestMessage();
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<LatestMessage>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-            }
-
-            @Override
-            public void onNext(@NonNull LatestMessage latestMessage) {
-                try {
-                    String appName = latestMessage.assets.get(0).name;
-                    Matcher matcher = Pattern.compile("\\d+").matcher(appName);
-                    if (matcher.find()) {
-                        int newVersion = Integer.parseInt(matcher.group());
-                        if (newVersion > BuildConfig.VERSION_CODE) {
-                            Intent intent = new Intent(context, UpdateActivity.class);
-                            intent.putExtra("updateMessage", latestMessage.body);
-                            intent.putExtra("updateUrl", latestMessage.assets.get(0).browser_download_url);
-                            if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_ALL) != null) {
-                                startActivity(intent);
-                            }
-                        }
-                    }
-                } catch (RuntimeException e) {
-                    // e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                // e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
-    }
-
-    private void showPrivacyAgreement() {
-        Observable<String> observable = MyApplication.myHttpRequest.getPrivacyAgreement();
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<String>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-            }
-
-            @Override
-            public void onNext(@NonNull String str) {
-                ViewPrivacyAgreementBinding privacyAgreementBinding = ViewPrivacyAgreementBinding.inflate(getLayoutInflater());
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).setCancelable(false).setView(privacyAgreementBinding.getRoot()).create();
-                privacyAgreementBinding.content.setText(str);
-                privacyAgreementBinding.sure.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MyUtils.setIsFirstStart(false);
-                        alertDialog.dismiss();
-                    }
-                });
-                privacyAgreementBinding.cancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                        finishAndRemoveTask();
-                    }
-                });
-                Window window = alertDialog.getWindow();
-                window.setBackgroundDrawableResource(R.drawable.add_data_background);
-                alertDialog.show();
-                WindowManager.LayoutParams lp = window.getAttributes();
-                DisplayMetrics metrics = new DisplayMetrics();
-                getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
-                lp.width = metrics.widthPixels / 5 * 4;
-                lp.height = metrics.heightPixels / 5 * 2;
-                window.setAttributes(lp);
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-                // e.printStackTrace();
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        });
     }
 
     private void handleImportRule(Intent intent) {

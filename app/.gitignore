@@ -2,3 +2,4 @@
 .project
 .settings
 release/output-metadata.json
+/release/

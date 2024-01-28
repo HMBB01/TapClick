@@ -11,6 +11,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -29,20 +30,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-    signingConfigs {
-        release {
-            keyAlias '*'
-            keyPassword '*'
-            storeFile file('../adgo.jks')
-            storePassword '*'
-        }
-        debug {
-            keyAlias '*'
-            keyPassword '*'
-            storeFile file('../adgo.jks')
-            storePassword '*'
-        }
-    }
+
 }
 
 dependencies {
@@ -59,10 +47,10 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.6'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
-    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.0.0'
+//    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+//    implementation "com.squareup.retrofit2:converter-gson:2.3.0"
+//    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+//    implementation 'com.squareup.retrofit2:converter-scalars:2.0.0'
     implementation 'me.codeboy.android:align-text-view:2.3.2'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'commons-codec:commons-codec:1.16.0'

@@ -51,60 +51,6 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="5dp"
-                    android:gravity="center_vertical"
-                    android:text="检查应用更新："
-                    android:textColor="@color/text_color"
-                    android:textSize="15sp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/setting_update"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/button_selector"
-                    android:gravity="center"
-                    android:padding="1dp"
-                    android:text="开始"
-                    android:textColor="@android:color/white" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="5dp"
-                    android:gravity="center_vertical"
-                    android:text="分享去除水印："
-                    android:textColor="@color/text_color"
-                    android:textSize="15sp" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/setting_share"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/button_selector"
-                    android:gravity="center"
-                    android:padding="1dp"
-                    android:text="分享"
-                    android:textColor="@android:color/white" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:visibility="gone">
 
