@@ -5,3 +5,4 @@
 .vscode
 build
 install.bat
+/app/build/
