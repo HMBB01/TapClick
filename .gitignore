@@ -6,3 +6,4 @@
 build
 install.bat
 /app/build/
+local.properties
