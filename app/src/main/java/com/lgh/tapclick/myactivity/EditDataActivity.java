@@ -412,6 +412,15 @@ public class EditDataActivity extends BaseActivity {
                                     editDataBinding.coordinateLayout.removeView(coordinateBinding.getRoot());
                                     if (appDescribe.coordinateList.isEmpty()) {
                                         editDataBinding.coordinateLayout.setVisibility(View.GONE);
+                                        appDescribe.coordinateOnOff = false;
+                                        baseSettingBinding.coordinateSwitch.setChecked(false);
+                                        if (appDescribe.widgetList.isEmpty()) {
+                                            appDescribe.onOff = false;
+                                            appDescribe.widgetOnOff = false;
+                                            baseSettingBinding.onOffSwitch.setChecked(false);
+                                            baseSettingBinding.widgetSwitch.setChecked(false);
+                                        }
+                                        dataDao.updateAppDescribe(appDescribe);
                                     }
                                 }
                             }).create().show();
@@ -609,6 +618,15 @@ public class EditDataActivity extends BaseActivity {
                                     editDataBinding.widgetLayout.removeView(widgetBinding.getRoot());
                                     if (appDescribe.widgetList.isEmpty()) {
                                         editDataBinding.widgetLayout.setVisibility(View.GONE);
+                                        appDescribe.widgetOnOff = false;
+                                        baseSettingBinding.widgetSwitch.setChecked(false);
+                                        if (appDescribe.coordinateList.isEmpty()) {
+                                            appDescribe.onOff = false;
+                                            appDescribe.coordinateOnOff = false;
+                                            baseSettingBinding.onOffSwitch.setChecked(false);
+                                            baseSettingBinding.coordinateSwitch.setChecked(false);
+                                        }
+                                        dataDao.updateAppDescribe(appDescribe);
                                     }
                                 }
                             }).create().show();
