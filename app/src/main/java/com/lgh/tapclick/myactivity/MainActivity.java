@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -59,16 +61,18 @@ public class MainActivity extends BaseActivity {
 
     private Context context;
     private DataDao dataDao;
+    private Handler handler;
     private LayoutInflater inflater;
     private ActivityMainBinding mainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainBinding = ActivityMainBinding.inflate(inflater = getLayoutInflater());
-        setContentView(mainBinding.getRoot());
         context = getApplicationContext();
         dataDao = MyApplication.dataDao;
+        handler = new Handler(Looper.getMainLooper());
+        mainBinding = ActivityMainBinding.inflate(inflater = getLayoutInflater());
+        setContentView(mainBinding.getRoot());
 
         final List<Resource> source = new ArrayList<>();
         source.add(new Resource("授权管理", R.drawable.authorization));
@@ -148,7 +152,12 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshAccessibilityServiceStatus();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshAccessibilityServiceStatus();
+            }
+        });
     }
 
     @Override
@@ -241,6 +250,7 @@ public class MainActivity extends BaseActivity {
                 newRuleBinding.sure.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        widgetShare.widget.createTime = System.currentTimeMillis();
                         widgetShare.widget.lastTriggerTime = 0;
                         widgetShare.widget.triggerCount = 0;
                         dataDao.insertWidget(widgetShare.widget);
@@ -306,6 +316,7 @@ public class MainActivity extends BaseActivity {
                 newRuleBinding.sure.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        coordinateShare.coordinate.createTime = System.currentTimeMillis();
                         coordinateShare.coordinate.lastTriggerTime = 0;
                         coordinateShare.coordinate.triggerCount = 0;
                         dataDao.insertCoordinate(coordinateShare.coordinate);
