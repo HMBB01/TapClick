@@ -71,7 +71,13 @@ public class MyApplication extends Application {
                     database.execSQL("ALTER TABLE 'Widget' ADD COLUMN 'condition' INTEGER NOT NULL DEFAULT 0");
                 }
             };
-            dataDao = Room.databaseBuilder(base, MyDatabase.class, "applicationData.db").addMigrations(migration_1_2, migration_2_3, migration_3_4, migration_4_5, migration_5_6, migration_6_7).allowMainThreadQueries().build().dataDao();
+            Migration migration_7_8 = new Migration(7, 8) {
+                @Override
+                public void migrate(@NonNull SupportSQLiteDatabase database) {
+                    database.execSQL("ALTER TABLE 'AppDescribe' DROP COLUMN 'onOff' ");
+                }
+            };
+            dataDao = Room.databaseBuilder(base, MyDatabase.class, "applicationData.db").addMigrations(migration_1_2, migration_2_3, migration_3_4, migration_4_5, migration_5_6, migration_6_7, migration_7_8).allowMainThreadQueries().build().dataDao();
         }
 
         if (myAppConfig == null) {
