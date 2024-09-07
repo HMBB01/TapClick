@@ -87,11 +87,9 @@ public class AppDescribe {
             Set<Widget> widgetSet = this.widgetSetMap.get(w.appActivity);
             if (widgetSet == null) {
                 widgetSet = new HashSet<>();
-                widgetSet.add(w);
                 widgetSetMap.put(w.appActivity, widgetSet);
-            } else {
-                widgetSet.add(w);
             }
+            widgetSet.add(w);
         }
     }
 
