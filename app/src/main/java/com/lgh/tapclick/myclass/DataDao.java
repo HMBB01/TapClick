@@ -14,38 +14,42 @@ import com.lgh.tapclick.mybean.Widget;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 @Dao
 public interface DataDao {
 
     @Query("SELECT * FROM AppDescribe")
-    List<AppDescribe> getAllAppDescribes();
+    Observable<List<AppDescribe>> getAllAppDescribes();
 
     @Query("SELECT * FROM AppDescribe WHERE appPackage = :appPackage")
-    AppDescribe getAppDescribeByPackage(String appPackage);
+    Observable<AppDescribe> getAppDescribeByPackage(String appPackage);
 
     @Query("SELECT * FROM Coordinate WHERE appPackage = :appPackage")
-    List<Coordinate> getCoordinatesByPackage(String appPackage);
+    Observable<List<Coordinate>> getCoordinatesByPackage(String appPackage);
 
     @Query("SELECT * FROM Widget WHERE appPackage = :appPackage")
-    List<Widget> getWidgetsByPackage(String appPackage);
+    Observable<List<Widget>> getWidgetsByPackage(String appPackage);
 
     @Query("SELECT * FROM MyAppConfig WHERE id = 0")
     MyAppConfig getMyAppConfig();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertAppDescribe(AppDescribe... appDescribes);
+    Observable<Long> insertAppDescribe(AppDescribe... appDescribes);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertAppDescribe(List<AppDescribe> appDescribes);
+    Observable<Long> insertAppDescribe(List<AppDescribe> appDescribes);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCoordinate(Coordinate... coordinates);
+    Observable<Long> insertCoordinate(Coordinate... coordinates);
 
+    //@Insert(onConflict = OnConflictStrategy.REPLACE)
+    //void insertWidget(Widget... widgets);
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertWidget(Widget... widgets);
+    Observable<Long> insertWidget(Widget... widgets);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertMyAppConfig(MyAppConfig myAppConfig);
+    Observable<Long> insertMyAppConfig(MyAppConfig myAppConfig);
 
     @Delete
     void deleteCoordinate(Coordinate... coordinates);
@@ -66,11 +70,11 @@ public interface DataDao {
     void updateMyAppConfig(MyAppConfig myAppConfig);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAppDescribeForce(List<AppDescribe> appDescribes);
+    Observable<Long> insertAppDescribeForce(List<AppDescribe> appDescribes);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertCoordinateForce(List<Coordinate> coordinates);
+    Observable<Long> insertCoordinateForce(List<Coordinate> coordinates);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertWidgetForce(List<Widget> widgets);
+    Observable<Long> insertWidgetForce(List<Widget> widgets);
 }

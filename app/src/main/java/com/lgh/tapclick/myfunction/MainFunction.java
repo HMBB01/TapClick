@@ -96,7 +96,6 @@ public class MainFunction {
     private final PackageManager packageManager;
     private final InputMethodManager inputMethodManager;
     private final Handler handler;
-    private final DataDao dataDao;
     private final Map<String, AppDescribe> appDescribeMap;
     private final ScheduledExecutorService executorServiceMain;
     private final ScheduledExecutorService executorServiceSub;
@@ -150,7 +149,6 @@ public class MainFunction {
         appDescribeMap = new HashMap<>();
         debounceSet = new HashSet<>();
         logList = new LinkedList<>();
-        dataDao = MyApplication.dataDao;
         currentPackage = "Initialize CurrentPackage";
         currentActivity = "Initialize CurrentActivity";
     }

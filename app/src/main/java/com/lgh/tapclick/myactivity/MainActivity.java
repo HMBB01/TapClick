@@ -24,43 +24,32 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.lgh.advertising.tapclick.BuildConfig;
 import com.lgh.advertising.tapclick.R;
 import com.lgh.advertising.tapclick.databinding.ActivityMainBinding;
 import com.lgh.advertising.tapclick.databinding.ViewMainItemBinding;
 import com.lgh.advertising.tapclick.databinding.ViewNewRuleBinding;
-import com.lgh.advertising.tapclick.databinding.ViewPrivacyAgreementBinding;
 import com.lgh.tapclick.mybean.AppDescribe;
 import com.lgh.tapclick.mybean.CoordinateShare;
-import com.lgh.tapclick.mybean.LatestMessage;
+import com.lgh.tapclick.mybean.MyAppConfig;
 import com.lgh.tapclick.mybean.Regulation;
 import com.lgh.tapclick.mybean.RegulationExport;
 import com.lgh.tapclick.mybean.WidgetShare;
-import com.lgh.tapclick.myclass.DataDao;
-import com.lgh.tapclick.myclass.MyApplication;
+import com.lgh.tapclick.myclass.DataDaoHelper;
 import com.lgh.tapclick.myfunction.MyUtils;
 
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
     private Context context;
-    private DataDao dataDao;
     private Handler handler;
     private LayoutInflater inflater;
     private ActivityMainBinding mainBinding;
@@ -69,7 +58,6 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
-        dataDao = MyApplication.dataDao;
         handler = new Handler(Looper.getMainLooper());
         mainBinding = ActivityMainBinding.inflate(inflater = getLayoutInflater());
         setContentView(mainBinding.getRoot());
@@ -136,17 +124,23 @@ public class MainActivity extends BaseActivity {
                         startActivity(new Intent(context, LogActivity.class));
                         break;
                     }
+                    default:
                 }
             }
         });
 
-        if (MyApplication.myAppConfig.autoHideOnTaskList) {
-            MyUtils.setExcludeFromRecents(true);
-        }
 
-        handleImportRule(getIntent());
-        // 触发允许读取应用列表授权弹窗
-        getPackageManager().getInstalledPackages(PackageManager.GET_META_DATA);
+        DataDaoHelper.getMyAppConfig(new DataDaoHelper.AbstractSimpleObserver<MyAppConfig>() {
+            @Override
+            public void onNext(@NonNull MyAppConfig config) {
+                if (config.autoHideOnTaskList) {
+                    MyUtils.setExcludeFromRecents(true);
+                    handleImportRule(getIntent());
+                    // 触发允许读取应用列表授权弹窗
+                    getPackageManager().getInstalledPackages(PackageManager.GET_META_DATA);
+                }
+            }
+        });
     }
 
     @Override
@@ -253,17 +247,27 @@ public class MainActivity extends BaseActivity {
                         widgetShare.widget.createTime = System.currentTimeMillis();
                         widgetShare.widget.lastTriggerTime = 0;
                         widgetShare.widget.triggerCount = 0;
-                        dataDao.insertWidget(widgetShare.widget);
-                        MyUtils.requestUpdateWidget(widgetShare.widget.appPackage);
-                        alertDialog.dismiss();
-                        Toast.makeText(context, "导入成功", Toast.LENGTH_SHORT).show();
-                        AppDescribe appDescribe = dataDao.getAppDescribeByPackage(widgetShare.widget.appPackage);
-                        if (appDescribe != null) {
-                            Intent intent = new Intent(context, EditDataActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("packageName", appDescribe.appPackage);
-                            startActivity(intent);
-                        }
+
+                        DataDaoHelper.insertWidget(widgetShare.widget, new DataDaoHelper.AbstractSimpleObserver<Long>() {
+                            @Override
+                            public void onNext(@NonNull Long aLong) {
+                                MyUtils.requestUpdateWidget(widgetShare.widget.appPackage);
+                                alertDialog.dismiss();
+                                Toast.makeText(context, "导入成功", Toast.LENGTH_SHORT).show();
+
+                                DataDaoHelper.getAppDescribeByPackage(widgetShare.widget.appPackage, new DataDaoHelper.AbstractSimpleObserver<AppDescribe>() {
+                                    @Override
+                                    public void onNext(@NonNull AppDescribe appDescribe) {
+                                        if (appDescribe != null) {
+                                            Intent intent = new Intent(context, EditDataActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("packageName", appDescribe.appPackage);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
                 newRuleBinding.cancel.setOnClickListener(new View.OnClickListener() {
@@ -319,17 +323,28 @@ public class MainActivity extends BaseActivity {
                         coordinateShare.coordinate.createTime = System.currentTimeMillis();
                         coordinateShare.coordinate.lastTriggerTime = 0;
                         coordinateShare.coordinate.triggerCount = 0;
-                        dataDao.insertCoordinate(coordinateShare.coordinate);
-                        MyUtils.requestUpdateWidget(coordinateShare.coordinate.appPackage);
-                        alertDialog.dismiss();
-                        Toast.makeText(context, "导入成功", Toast.LENGTH_SHORT).show();
-                        AppDescribe appDescribe = dataDao.getAppDescribeByPackage(coordinateShare.coordinate.appPackage);
-                        if (appDescribe != null) {
-                            Intent intent = new Intent(context, EditDataActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.putExtra("packageName", appDescribe.appPackage);
-                            startActivity(intent);
-                        }
+                        DataDaoHelper.insertCoordinate(coordinateShare.coordinate, new DataDaoHelper.AbstractSimpleObserver<Long>() {
+                            @Override
+                            public void onNext(@NonNull Long aLong) {
+                                MyUtils.requestUpdateWidget(coordinateShare.coordinate.appPackage);
+                                alertDialog.dismiss();
+                                Toast.makeText(context, "导入成功", Toast.LENGTH_SHORT).show();
+
+
+                                DataDaoHelper.getAppDescribeByPackage(coordinateShare.coordinate.appPackage, new DataDaoHelper.AbstractSimpleObserver<AppDescribe>() {
+                                    @Override
+                                    public void onNext(@NonNull AppDescribe appDescribe) {
+                                        if (appDescribe != null) {
+                                            Intent intent = new Intent(context, EditDataActivity.class);
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("packageName", appDescribe.appPackage);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
                     }
                 });
                 newRuleBinding.cancel.setOnClickListener(new View.OnClickListener() {
