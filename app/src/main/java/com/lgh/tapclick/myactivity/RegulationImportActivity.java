@@ -16,8 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.lgh.advertising.tapclick.databinding.ActivityRegulationImportBinding;
-import com.lgh.advertising.tapclick.databinding.ViewItemImportBinding;
+import com.lgh.tapclick.databinding.ActivityRegulationImportBinding;
+import com.lgh.tapclick.databinding.ViewItemImportBinding;
 import com.lgh.tapclick.mybean.AppDescribe;
 import com.lgh.tapclick.mybean.Coordinate;
 import com.lgh.tapclick.mybean.Regulation;
@@ -132,6 +132,7 @@ public class RegulationImportActivity extends BaseActivity {
                                         widget.createTime = System.currentTimeMillis();
                                         widget.lastTriggerTime = 0;
                                         widget.triggerCount = 0;
+                                        widget.triggerReason = "";
                                         widgets.add(widget);
                                     }
                                     appDescribes.add(e.appDescribe);
@@ -139,9 +140,9 @@ public class RegulationImportActivity extends BaseActivity {
                                     widgets.addAll(e.widgetList);
                                 }
                                 DataDao dataDao = MyApplication.dataDao;
-                                dataDao.insertAppDescribeForce(appDescribes);
-                                dataDao.insertCoordinateForce(coordinates);
-                                dataDao.insertWidgetForce(widgets);
+                                dataDao.insertAppDescribes(appDescribes);
+                                dataDao.insertCoordinates(coordinates);
+                                dataDao.insertWidgets(widgets);
                                 MyUtils.requestUpdateAllDate();
                                 Toast.makeText(RegulationImportActivity.this, "导入成功", Toast.LENGTH_SHORT).show();
                             }

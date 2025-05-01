@@ -28,6 +28,7 @@
                 android:background="@null"
                 android:ellipsize="end"
                 android:enabled="false"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -52,6 +53,7 @@
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:enabled="false"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -69,13 +71,14 @@
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.lgh.tapclick.myview.MyEditTextView
                 android:id="@+id/widget_rect"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:hint="该属性不存在"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -89,17 +92,43 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Id:"
+                android:text="NodeId:"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/widget_id"
+            <com.lgh.tapclick.myview.MyEditTextView
+                android:id="@+id/widget_node_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:hint="该属性不存在"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ViewId:"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
+
+            <com.lgh.tapclick.myview.MyEditTextView
+                android:id="@+id/widget_view_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:background="@null"
+                android:hint="该属性不存在"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -117,13 +146,14 @@
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.lgh.tapclick.myview.MyEditTextView
                 android:id="@+id/widget_describe"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:hint="该属性不存在"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -141,13 +171,14 @@
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.lgh.tapclick.myview.MyEditTextView
                 android:id="@+id/widget_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:hint="该属性不存在"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -339,7 +370,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="防抖延迟(ms):"
+                    android:text="最小触发间隔(ms):"
                     android:textColor="@color/text_color"
                     android:textSize="12sp" />
 
@@ -411,30 +442,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Toast提示:"
-                android:textColor="@color/text_color"
-                android:textSize="12sp" />
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/widget_toast"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:background="@null"
-                android:hint="内容为空时无提示"
-                android:singleLine="true"
-                android:textColor="@color/text_color"
-                android:textSize="12sp" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="备注:"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -446,6 +453,7 @@
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:hint="请输入该控件的备注内容"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -471,6 +479,7 @@
                 android:background="@null"
                 android:ellipsize="end"
                 android:enabled="false"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -489,13 +498,39 @@
                 android:textSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/widget_last_click_time"
+                android:id="@+id/widget_last_trigger_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:enabled="false"
                 android:hint="0"
+                android:inputType="textNoSuggestions"
+                android:singleLine="true"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="触发原因:"
+                android:textColor="@color/text_color"
+                android:textSize="12sp" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/widget_trigger_reason"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:background="@null"
+                android:enabled="false"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />
@@ -514,13 +549,14 @@
                 android:textSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/widget_click_count"
+                android:id="@+id/widget_trigger_count"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:background="@null"
                 android:enabled="false"
                 android:hint="0"
+                android:inputType="textNoSuggestions"
                 android:singleLine="true"
                 android:textColor="@color/text_color"
                 android:textSize="12sp" />

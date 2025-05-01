@@ -7,12 +7,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
-import com.lgh.advertising.tapclick.BuildConfig;
-import com.lgh.advertising.tapclick.R;
+import com.lgh.tapclick.BuildConfig;
+import com.lgh.tapclick.R;
 import com.lgh.tapclick.myactivity.ExceptionReportActivity;
 
 import org.apache.commons.io.FileUtils;
@@ -44,14 +45,19 @@ public class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandl
     }
 
     private void handleUiThreadException() {
-        while (true) {
-            try {
-                Looper.loop();
-            } catch (Throwable e) {
-                createExceptionNotification(e);
-                e.printStackTrace();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Looper.loop();
+                    } catch (Throwable e) {
+                        createExceptionNotification(e);
+                        e.printStackTrace();
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override

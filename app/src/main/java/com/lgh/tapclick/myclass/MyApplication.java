@@ -11,10 +11,15 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.lgh.tapclick.mybean.MyAppConfig;
 import com.lgh.tapclick.myfunction.MyUtils;
 
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
 public class MyApplication extends Application {
 
     public static DataDao dataDao;
-    public static MyAppConfig myAppConfig;
+    public static MyHttpRequest myHttpRequest;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -65,21 +70,18 @@ public class MyApplication extends Application {
                     database.execSQL("ALTER TABLE 'Widget' ADD COLUMN 'condition' INTEGER NOT NULL DEFAULT 0");
                 }
             };
-            Migration migration_7_8 = new Migration(7, 8) {
-                @Override
-                public void migrate(@NonNull SupportSQLiteDatabase database) {
-                    database.execSQL("ALTER TABLE 'AppDescribe' DROP COLUMN 'onOff' ");
-                }
-            };
-            dataDao = Room.databaseBuilder(base, MyDatabase.class, "applicationData.db").addMigrations(migration_1_2, migration_2_3, migration_3_4, migration_4_5, migration_5_6, migration_6_7, migration_7_8).allowMainThreadQueries().build().dataDao();
+            dataDao = Room.databaseBuilder(base, MyDatabase.class, "applicationData.db").addMigrations(migration_1_2, migration_2_3, migration_3_4, migration_4_5, migration_5_6, migration_6_7).allowMainThreadQueries().build().dataDao();
         }
 
+        if (myHttpRequest == null) {
+            Retrofit retrofit = new Retrofit.Builder().addConverterFactory(ScalarsConverterFactory.create()).addConverterFactory(GsonConverterFactory.create()).addCallAdapterFactory(RxJava3CallAdapterFactory.create()).build();
+            myHttpRequest = retrofit.create(MyHttpRequest.class);
+        }
+
+        MyAppConfig myAppConfig = dataDao.getMyAppConfig();
         if (myAppConfig == null) {
-            myAppConfig = dataDao.getMyAppConfig();
-            if (myAppConfig == null) {
-                myAppConfig = new MyAppConfig();
-                dataDao.insertMyAppConfig(myAppConfig);
-            }
+            myAppConfig = new MyAppConfig();
+            dataDao.insertMyAppConfig(myAppConfig);
         }
 
         MyUtils.init(base);

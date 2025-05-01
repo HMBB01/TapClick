@@ -1,5 +1,6 @@
 package com.lgh.tapclick.myfunction;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,10 +8,22 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.lgh.advertising.tapclick.BuildConfig;
+import com.lgh.tapclick.BuildConfig;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import cn.hutool.core.util.StrUtil;
 
 public class MyUtils {
     private static final String contentProviderAuthority = "content://" + BuildConfig.APPLICATION_ID;
@@ -57,24 +70,11 @@ public class MyUtils {
         return false;
     }
 
-    public static boolean requestUpdateWidget(String packageName) {
+    public static boolean requestRemoveAppDescribes(List<String> packages) {
         try {
             ContentValues contentValues = new ContentValues();
-            contentValues.put("updateScope", "updateWidget");
-            contentValues.put("packageName", packageName);
-            int re = mContext.getContentResolver().update(Uri.parse(contentProviderAuthority), contentValues, null, null);
-            return re > 0;
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static boolean requestUpdateCoordinate(String packageName) {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("updateScope", "updateCoordinate");
-            contentValues.put("packageName", packageName);
+            contentValues.put("updateScope", "removeAppDescribe");
+            contentValues.put("packageName", String.join(",", packages));
             int re = mContext.getContentResolver().update(Uri.parse(contentProviderAuthority), contentValues, null, null);
             return re > 0;
         } catch (NullPointerException e) {
@@ -222,7 +222,7 @@ public class MyUtils {
     }
 
     public static String getLog() {
-        try (Cursor cursor = mContext.getContentResolver().query(Uri.parse(contentProviderAuthority), null, "log", null, null);) {
+        try (Cursor cursor = mContext.getContentResolver().query(Uri.parse(contentProviderAuthority), null, "log", null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 int index = cursor.getColumnIndex("log");
                 return cursor.getString(index);
@@ -231,5 +231,40 @@ public class MyUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @SuppressLint("HardwareIds")
+    public static String getMyDeviceId() {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(mContext.getPackageName(), Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+        String myDeviceId = sharedPreferences.getString("myDeviceId", null);
+        if (StrUtil.isBlank(myDeviceId)) {
+            Map<String, String> map = new TreeMap<>();
+            Field[] fields = Build.class.getFields();
+            for (Field field : fields) {
+                if (field.getType() == String.class) {
+                    field.setAccessible(true);
+                    try {
+                        String val = (String) field.get(Build.class);
+                        map.put(field.getName(), val);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (field.getType() == String[].class) {
+                    field.setAccessible(true);
+                    try {
+                        String[] val = (String[]) field.get(Build.class);
+                        map.put(field.getName(), Arrays.toString(val));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            String androidId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+            map.put(Settings.Secure.ANDROID_ID, androidId);
+            myDeviceId = DigestUtils.md5Hex(map.toString());
+            sharedPreferences.edit().putString("myDeviceId", myDeviceId).apply();
+        }
+        return myDeviceId;
     }
 }
